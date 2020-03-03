@@ -2,6 +2,9 @@
 # -*- coding: utf-8 -*-
 
 import sqlite3
+import pickle
+import yaml
+from datetime import datetime
 
 
 def get_tags_dictionary(htmlText):
@@ -30,7 +33,6 @@ def get_str_from_url(url):
 
 
 def log_to_file(url):
-    from datetime import datetime
     now = datetime.now()
     f = open("log.txt", "a")
     f.write('{0} - {1} - {2}\n'.format(now.date(), now.time(), url))
@@ -38,20 +40,17 @@ def log_to_file(url):
 
 
 def get_synonyms():
-    import yaml
     with open(r'synonyms.yml') as file:
         documents = yaml.full_load(file)
     return documents
 
 
 def put_sysnonyms(dict):
-    import yaml
     with open('synonyms.yml', 'w') as yaml_file:
         yaml.dump(dict, yaml_file)
 
 
 def get_connection():
-    import sqlite3
     conn = sqlite3.connect("tagcounter.db")
     cursor = conn.cursor()
 
@@ -63,7 +62,6 @@ def get_connection():
 
 
 def add_site_Info_to_db(siteName, url, date, dict, conn):
-    import pickle
     cursor = conn.cursor()
     dict_blob = pickle.dumps(dict, pickle.HIGHEST_PROTOCOL)
     insert_query = """ INSERT INTO tagcounter VALUES(?, ?, ?, ?)"""
@@ -73,7 +71,6 @@ def add_site_Info_to_db(siteName, url, date, dict, conn):
 
 
 def select_by_url(domain, conn):
-    import pickle
     cur = conn.cursor()
     cur.execute("SELECT dict FROM tagcounter WHERE url like '{}' ORDER BY date DESC LIMIT 1".format(domain))
     row = cur.fetchone()
@@ -98,8 +95,6 @@ if __name__ == '__main__':
             conn = get_connection()
             htmlStr = get_str_from_url(url)
             myDict = get_tags_dictionary(htmlStr)
-            from datetime import datetime
-
             now = datetime.now()
             siteName = url.split("//")[-1].split("/")[0]
             add_site_Info_to_db(siteName, url, now, myDict, conn)
