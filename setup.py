@@ -11,12 +11,9 @@ setup(
     include_package_data=True,
     scripts=["tagcounter/core.py"],
 
-    # Project uses reStructuredText, so ensure that the docutils get
-    # installed or upgraded on the target machine
     install_requires=["PyYAML>=5.1"],
 
     package_data={
-        # If any package contains *.txt or *.rst files, include them:
         "tagcounter": ["*.log", "*.txt", "*.yml", "*.db"],
     },
     test_suite='test'
