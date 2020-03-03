@@ -1,0 +1,1 @@
+recursive-include tagcounter *.log *.txt *.yml *.db
